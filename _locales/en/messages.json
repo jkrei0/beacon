@@ -21,6 +21,7 @@
   "simpleSettingsFonts": { "message": "Fonts & Styles"},
   "simpleSettingsFontFamily": { "message": "Font Family"},
   "simpleSettingsFontSize": { "message": "Font Size"},
+  "simpleSettingsAutoComplete": { "message": "AutoComplete"},
 
   "menuFile": { "message": "File" },
   "menuNewFile": { "message": "New File" },

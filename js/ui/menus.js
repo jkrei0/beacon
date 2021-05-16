@@ -1,3 +1,5 @@
+fontJS = fontJS
+
 define([
     "settings!menus,keys",
     "editor",
@@ -176,20 +178,64 @@ define([
       light = () => { if(userConfig.uiTheme == "light" ){return "selected";}else{return "";}}
       twilight = () => { if(userConfig.uiTheme == "twilight" ){return "selected";}else{return "";}}
       uiThemes = `
+        <option value="">Select something</option>
         <option value="dark" ${dark()}>Dark</option>
         <option value="light" ${light()}>Light</option>
         <option value="twilight"${twilight()}>Twilight</option>`
+      
+      aceThemes += "<option value=''>Select something</option>";
       aceConfig.themes.forEach(function(theme) {
         selected = ()=>{
           if(theme.name == userConfig.defaultTheme){return "selected";}else{return "";}
         }
         aceThemes += `<option value="${theme.name}" ${selected()}>${theme.label}</option>`;
       });
+      fontsList = ""
+      fontsArray = [
+        "monospace",
+        "Consolas",
+        "Courier",
+        "Cutive Mono",
+        "DejaVu Sans Mono",
+        "Droid Sans Mono",
+        "Eco Coding",
+        "Fira Mono",
+        "Fira Code",
+        "Fira Code Pro",
+        "Fixedsys",
+        "Free Mono",
+        "Go Mono",
+        "IBM Plex Mono",
+        "Iconsolata",
+        "Letter Gothic",
+        "Lucida Console",
+        "Menlo",
+        "Monaco",
+        "Oxygen Mono",
+        "PT Mono",
+        "Roboto Mono",
+        "Source Code Pro",
+        "Pro Font",
+        "Overpass Mono",
+        "Prestige Elite",
+      ]
+      fontJS.setup();
+      fontsList += "<option value=''>Default</option>";
+      for (font of fontsArray) {
+        exists = fontJS.isInstalled(font)
+        if (exists[0]) {
+          isSelected = function() {if (userConfig.fontFamily == font) {return "selected";} else {return "";}}
+          fontsList += `<option value='${font}' ${isSelected()}>${font}</option>`
+        }
+      }
       dialog(
         inflate.getHTML("templates/simpleSettings.html", {
           version: chrome.runtime.getManifest().version,
           aceThemes: aceThemes,
-          uiThemes: uiThemes
+          uiThemes: uiThemes,
+          fontSize: userConfig.fontSize,
+          fontsList: fontsList,
+          autoCompleteLive: userConfig.autocompleteLive == true? "selected":""
         })
       );
     });

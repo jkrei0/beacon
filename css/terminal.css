@@ -63,6 +63,12 @@ h4.modal-title {
 .form-control.small {
   width: 100px;
 }
+.form-control.small-med {
+  width: 150px;
+}
+.form-control.small-ex {
+  width: 50px;
+}
 .control-label::after {
   content: ': ';
 }
@@ -88,6 +94,9 @@ svg {
   position: relative;
   top: 3px;
   margin-top: -4px;
+}
+.settings {
+  width: 500px;
 }
 .btn {
   position: relative;

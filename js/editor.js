@@ -150,21 +150,43 @@ define([
     exp = /"defaultTheme": ?".+?"/
     user = await sync.get("user.json")
     user = user.replace(exp, `"defaultTheme":"${theme}"`)
-    console.log(user, user.match(exp))
-    console.log(theme)
     await sync.set("user.json", user)
-  })
+  });
   command.on("editor:save-ui-theme", async function(theme, c) {
     //command.fire("editor:theme", theme)
     exp = /"uiTheme": ?".+?"/
     user = await sync.get("user.json")
     user = user.replace(exp, `"uiTheme":"${theme}"`)
-    console.log(user, user.match(exp))
-    console.log(theme)
     await sync.set("user.json", user)
     command.fire("init:restart")
     command.fire("init:update-theme", theme)
-  })
+  });
+  command.on("editor:save-font", async function(theme, c) {
+    //command.fire("editor:theme", theme)
+    exp = /"fontFamily": ?".+?"/
+    user = await sync.get("user.json")
+    user = user.replace(exp, `"fontFamily":"${theme}"`)
+    editor.setOptions({
+      fontFamily: theme
+    });
+    await sync.set("user.json", user)
+  });
+  command.on("editor:save-font-size", async function(theme, c) {
+    //command.fire("editor:theme", theme)
+    exp = /"fontSize": ?".+?"/
+    user = await sync.get("user.json")
+    user = user.replace(exp, `"fontSize":"${theme}"`)
+    editor.setFontSize(parseInt(theme))
+    await sync.set("user.json", user)
+  });
+  command.on("editor:save-acl", async function(theme, c) {
+    //command.fire("editor:theme", theme)
+    exp = /"autocompleteLive": ?".+?"/
+    user = await sync.get("user.json")
+    user = user.replace(exp, `"autocompleteLive":"${theme}"`)
+    editor.setFontSize(parseInt(theme))
+    await sync.set("user.json", user)
+  });
   
   command.on("editor:print", function(c = noop) {
     ace.require("ace/config").loadModule("ace/ext/static_highlight", function(highlighter) {
