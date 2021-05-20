@@ -53,8 +53,8 @@ define([
 
       resizebar.addEventListener("mousedown", function (de) {
         function onmouseupf (ue) {
-          document.removeEventListener("mouseup", onmouseupf)
-          document.removeEventListener("mousemove", onmousemovef)
+          document.removeEventListener("mouseup", onmouseupf);
+          document.removeEventListener("mousemove", onmousemovef);
         };
         function onmousemovef (me) {
           me.preventDefault();
@@ -72,7 +72,7 @@ define([
   });
 
   command.on("terminal:resize", function(pos) {
-    height = pos
+    height = pos;
     chromeP.storage.local.set({"terinalsize": height});
 
     terminalContainer.style.height = height + "px";
@@ -107,12 +107,16 @@ define([
     }
     chrome.serial.getDevices(function(ports) {
       if (ports.length > 0) {
+        var listed = [];
         var HTML = "";
         var portPicker = document.querySelector('#portDropdown');
         ports.forEach(function(portNames) {
-          var portName = portNames.path;
-          HTML = HTML + '<option value="' +
-            portName + '">' + portName + '</option>';
+          if (listed.indexOf(portNames.path) < 0) {
+            var portName = portNames.path;
+            HTML = HTML + '<option value="' +
+              portName + '">' + portName + '</option>';
+            listed.push(portName);
+          }
         });
         portPicker.innerHTML = HTML;
       }

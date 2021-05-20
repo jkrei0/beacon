@@ -2,6 +2,9 @@
   background-color: #AAA;
   color: #111;
 }
+#terminal-drag:hover {
+  background: #808;
+}
 
 div.modal.fade {
   color: #111;
