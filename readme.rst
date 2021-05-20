@@ -13,8 +13,7 @@ component, it offers:
 -  fast project-wide string search
 -  a serial terminal emulator
 
-You can also load Beacon from source code, either to hack around on or
-to try the absolute bleeding edge. You'll need to have Node and NPM
+You can also load Beacon from source code. You'll need to have Node and NPM
 installed first, then follow these steps:
 
 0. Clone this repo to your local machine
