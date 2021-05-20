@@ -12,6 +12,20 @@
   padding: 0px;
   color: #B2B2B2;
 }
+#terminal-drag {
+  transition: 0.5s;
+  position:absolute;
+  height: 6px;
+  cursor: ns-resize;
+  z-index: 9;
+  background: transparent;
+  left: 0px;
+  right: 0px;
+}
+#terminal-drag:hover {
+  transition: 0.5s;
+  background: #FFA200;
+}
 
 div.modal.fade {
   color: white;

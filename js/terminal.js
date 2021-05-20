@@ -10,7 +10,7 @@ define([
   ], function(command, chromeP, Settings, sessions) {
 
   let terminalContainer = document.querySelector("#embeddedterminal");
-  let terminalElement = undefined
+  let terminalElement = undefined;
 
 
   cc = command;
@@ -31,22 +31,56 @@ define([
     console.log(t);
     htermTE = t;
 
-    t.onTerminalReady = function() {
+    t.onTerminalReady = async function() {
       UI_INSTANCE.OnHtermReady();
       console.log("t = ", t, "htermTE=", htermTE);
       t.runCommandClass(Crosh, document.location.hash.substr(1));
       hterm.Parser.identifiers.actions.clearScrollback(t);
       inputOutput.println('Beacon Serial Terminal for Chrome and ChromeOS. https://github.com/jkrei0/beacon');
       
-      terminalElement = htermTE.div_.firstChild
+      terminalElement = htermTE.div_.firstChild;
+      
+      ts = await chromeP.storage.local.get("terminalsize")
+      height = ts.terminalsize || 250;
 
-      terminalContainer.style.height = "250px";
+      terminalContainer.style.height = height + "px";
       terminalElement.style.display = "block";
-      terminalElement.style.height = terminalContainer.style.height;
+      terminalElement.style.height = height-5 + "px";
+      terminalElement.style.bottom = "0px";
+
+      resizebar = document.querySelector("#terminal-drag");
+      resizebar.style.top = height;
+
+      resizebar.addEventListener("mousedown", function (de) {
+        function onmouseupf (ue) {
+          document.removeEventListener("mouseup", onmouseupf)
+          document.removeEventListener("mousemove", onmousemovef)
+        };
+        function onmousemovef (me) {
+          me.preventDefault();
+          newpos = me.clientY;
+          resizebar.style.top = newpos+"px";
+          command.fire("terminal:resize", window.innerHeight-newpos);
+        };
+        document.addEventListener("mouseup", onmouseupf);
+        document.addEventListener("mousemove", onmousemovef);
+      });
+
       command.fire("terminal:restart");
       return true;
     };
   });
+
+  command.on("terminal:resize", function(pos) {
+    height = pos
+    chromeP.storage.local.set({"terinalsize": height});
+
+    terminalContainer.style.height = height + "px";
+    terminalElement.style.display = "block";
+    terminalElement.style.height = height-5 + "px";
+    terminalElement.style.bottom = "0px";
+  });
+
   command.on("terminal:restart", function () {
     userConfig = Settings.get("user");
     document.querySelector("#terminalUITheme").setAttribute("href", "css/terminal-"+userConfig.uiTheme+".css")
