@@ -1,9 +1,10 @@
 // Copyright (c) 2012, Sungguk Lim. Please see the AUTHORS file for details.
 // All rights reserved. Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
+// license that can be found in the BeagleTermLicense.txt file.
 
 var inputOutput;
 var self;
+var connID;
 
 var UI_INSTANCE = new DrawUi();
 
@@ -134,7 +135,6 @@ var Crosh = function(argv) {
   };
 
   this.sendString_ = function(fromKeyboard, string) {
-    m4OnStringSent(string)
     chrome.serial.send(self.connectionId, str2ab(string), function() { });
   };
 
@@ -142,15 +142,9 @@ var Crosh = function(argv) {
   };
 };
 
-window.onload = function() {
+let beagleTermStart = function() {
   hterm.defaultStorage = new lib.Storage.Chrome(chrome.storage.sync);
   var t = new hterm.Terminal('opt_profileName');
   t.decorate(document.querySelector('#terminal'));
-  htermTerminalElement = t
-
-  t.onTerminalReady = function() {
-    UI_INSTANCE.OnHtermReady();
-    t.runCommandClass(Crosh, document.location.hash.substr(1));
-    return true;
-  };
-};
+  return t;
+}

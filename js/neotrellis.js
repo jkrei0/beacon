@@ -1,8 +1,3 @@
-/*
-m4RunButton = undefined
-m4StopButton = undefined
-m4HelpButton = undefined
-htermTerminalElement = undefined*/
 
 // default terminal position and size
 terminalPosition = "bottom"
@@ -64,14 +59,6 @@ chrome.storage.sync.get(['terminalThemeLight', 'terminalThemeDark'], (res) => {
         updateTerminalTheme();
     }
 });
-//window.setTimeout(firstStartup, 2000)
-function firstStartup() {
-    chrome.storage.sync.get(['startupOff'], (res) => {
-        if(!res.startupOff || res.startupOff == false) {
-            newFileWithText(startupText, "*");
-        }
-    });
-}
 
 function updateUITheme() {
     UITheme = window.getComputedStyle(document.querySelector('.tabs').firstChild).borderBottomColor

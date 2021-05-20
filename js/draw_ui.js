@@ -15,13 +15,20 @@ DrawUi.prototype = {
    */
   OnHtermReady: function() {
     $('.modal-footer button').focus();
-    this.registerConnectBtnEvent_();
+    if (!this.eventRegistered_) {
+      this.registerConnectBtnEvent_(this);
+      this.eventRegistered_ = true;
+    }
   },
 
   /**
    * @private
    */
-  registerConnectBtnEvent_: function() {
+  eventRegistered_ : false,
+  serialRegistered_ : false,
+
+  registerConnectBtnEvent_: function(self) {
+    self_this = this;
     var connectBtn = document.querySelector('#connectBtn');
     connectBtn.addEventListener('click', function(event) {
       // Get the serial port (i.e. COM1, COM2, COM3, etc.)
@@ -69,6 +76,7 @@ DrawUi.prototype = {
         'stopBits': settings.stopBits,
         'ctsFlowControl': settings.ctsFlowControl
       }, function(openInfo) {
+        
         if (openInfo === undefined) {
           inputOutput.println('Unable to connect to device with value' +
               settings.toString());
@@ -79,12 +87,18 @@ DrawUi.prototype = {
         inputOutput.println('Device found on ' + port +
                   ' via Connection ID ' + openInfo.connectionId);
         self.connectionId = openInfo.connectionId;
+        self.connectionPort = port;
         AddConnectedSerialId(openInfo.connectionId);
-        chrome.serial.onReceive.addListener(function(info) {
-          if (info && info.data) {
-            inputOutput.print(ab2str(info.data));
-          }
-        });
+        if (!self_this.serialRegistered_) {
+          self_this.serialRegistered_ = true;
+          chrome.serial.onReceive.addListener(function(info) {
+            if (info && info.data) {
+              inputOutput.print(ab2str(info.data));
+            }
+          });
+        } else {
+          console.log("already registered!");
+        }
       });
     });
   }

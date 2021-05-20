@@ -83,7 +83,6 @@
   {
     "label": "menuSettings",
     "sub": [
-      { "label": "menuSimplePrefs", "command": "session:open-simple-settings" },
       { "label": "menuUserPrefs", "command": "session:open-settings-file", "argument": "user" },
       { "label": "menuKeyboard", "command": "session:open-settings-file", "argument": "keys" },
       { "label": "menuMenus", "command": "session:open-settings-file", "argument": "menus" },

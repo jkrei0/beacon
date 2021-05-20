@@ -17,7 +17,7 @@ div.modal.fade {
   color: white;
   position: fixed;
   margin: auto;
-  bottom: 10px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 9999999999;

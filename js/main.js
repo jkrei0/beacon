@@ -1,9 +1,5 @@
 chrome.version = window.navigator.appVersion.match(/Chrome\/(\d+)/)[1] * 1 || 0;
 
-newFileWithText = function(text, file){return false;}
-getEditorContent = function(){return false;}
-function beaconFirstStartup(state) {return false;}
-
 require([
     "command",
     "editor",
@@ -15,17 +11,9 @@ require([
     "fileManager",
     "api",
     "sequences",
-    "ui"
+    "ui",
+    "terminal",
   ], function(command, editor, Settings, dialog, sessions, i18n, chromeP) {
-
-  newFileWithText = function(text, file) {
-    sessions.addFile(text, file)
-    //command.fire("session:new-file", text);
-    //editor.session.insert({row:0, column:0}, text)
-  }
-  getEditorContent = function() {
-    return editor.getValue();
-  }
   
   //translate inline strings
   i18n.page();
