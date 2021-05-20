@@ -96,8 +96,6 @@ DrawUi.prototype = {
               inputOutput.print(ab2str(info.data));
             }
           });
-        } else {
-          console.log("already registered!");
         }
       });
     });

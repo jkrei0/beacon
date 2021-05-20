@@ -28,12 +28,10 @@ define([
 
   command.on("terminal:init", function () {
     t = beagleTermStart();
-    console.log(t);
     htermTE = t;
 
     t.onTerminalReady = async function() {
       UI_INSTANCE.OnHtermReady();
-      console.log("t = ", t, "htermTE=", htermTE);
       t.runCommandClass(Crosh, document.location.hash.substr(1));
       hterm.Parser.identifiers.actions.clearScrollback(t);
       inputOutput.println('Beacon Serial Terminal for Chrome and ChromeOS. https://github.com/jkrei0/beacon');
@@ -73,7 +71,7 @@ define([
 
   command.on("terminal:resize", function(pos) {
     height = pos;
-    chromeP.storage.local.set({"terinalsize": height});
+    chromeP.storage.local.set({"terminalsize": height});
 
     terminalContainer.style.height = height + "px";
     terminalElement.style.display = "block";
@@ -137,14 +135,12 @@ define([
 
   document.querySelector("#terminalclear").addEventListener('click', ()=>command.fire("terminal:clear"))
   command.on("terminal:clear", function() {
-    console.log("clear");
     hterm.Parser.identifiers.actions.clearScrollback(htermTE);
     htermTE.io.println('Beacon Serial Terminal for Chrome and ChromeOS. https://github.com/jkrei0/beacon');
   });
 
   document.querySelector("#terminalopeninfile").addEventListener('click', ()=>command.fire("terminal:open-in-file"))
   command.on("terminal:open-in-file", function() {
-    console.log("open-in-file");
     
     date = new Date();
     text = `Terminal Copied At ${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}-${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
@@ -161,7 +157,6 @@ define([
 
   document.querySelector("#terminaldisconnect").addEventListener('click', ()=>command.fire("terminal:disconnect"))
   command.on("terminal:disconnect", function() {
-    console.log(UI_INSTANCE.connectionId)
     chrome.serial.flush(UI_INSTANCE.connectionId, (_)=>{
       chrome.serial.disconnect(UI_INSTANCE.connectionId, (result)=>{
         UI_INSTANCE.ShowSettingsDialog();
