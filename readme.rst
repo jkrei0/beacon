@@ -1,8 +1,7 @@
 Beacon
 =====
 
-Beacon is a lightweight-but-powerful programmer's editor running as a Chrome
-Packaged App. Inspired by Sublime and built on top of the Ace editing
+Beacon is a lightweight-but-powerful programming editor packaged as a Chrome extension. Inspired by Sublime and built on top of the Ace editing
 component, it offers:
 
 -  multiple cursors
@@ -12,7 +11,7 @@ component, it offers:
 -  hackable, synchronized configuration files
 -  project files and folder view
 -  fast project-wide string search
--  a serial terminal emultor
+-  a serial terminal emulator
 
 You can also load Beacon from source code, either to hack around on or
 to try the absolute bleeding edge. You'll need to have Node and NPM
@@ -28,5 +27,5 @@ installed first, then follow these steps:
    extension..." and select the directory containing Beacon's
    manifest.json.
 
-Beacon is a fork of `Caret <https://github.com/thomaswilburn/Caret>`_ by Thomas Wilburn, modified to include the serial terminal emulator, `BeagleTerm <https://github.com/beagleterm/beagle-term>`_.
+Beacon is a fork of `Caret <https://github.com/thomaswilburn/Caret>`_ by Thomas Wilburn, modified to include the serial terminal emulator `BeagleTerm <https://github.com/beagleterm/beagle-term>`_.
 
