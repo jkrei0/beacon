@@ -33,7 +33,8 @@ DrawUi.prototype = {
     connectBtn.addEventListener('click', function(event) {
       // Get the serial port (i.e. COM1, COM2, COM3, etc.)
       var portSelect = document.querySelector('#portDropdown');
-      var port = portSelect.options[portSelect.selectedIndex].value;
+      var port_ = portSelect.options[portSelect.selectedIndex] || {value: "COM999"};
+      var port = port_.value;
 
       // Get the baud rate (i.e. 9600, 38400, 57600, 115200, etc. )
       var baudSelect = document.querySelector('#bitrateDropdown');
@@ -78,8 +79,11 @@ DrawUi.prototype = {
       }, function(openInfo) {
         
         if (openInfo === undefined) {
-          inputOutput.println('Unable to connect to device with value' +
-              settings.toString());
+          if (port == "COM999") {
+            inputOutput.println(`Unable to connect do device. No device selected.`);
+          } else {
+            inputOutput.println(`Unable to connect to device on port ${port}.`);
+          }
           // TODO: Open 'connection dialog' again.
           return;
         }

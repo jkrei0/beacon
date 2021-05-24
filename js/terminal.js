@@ -1,4 +1,3 @@
-let cc = undefined
 
 let htermTE;
 
@@ -11,9 +10,8 @@ define([
 
   let terminalContainer = document.querySelector("#embeddedterminal");
   let terminalElement = undefined;
+  let connected = false;
 
-
-  cc = command;
   // htermTE, connID, UI_INSTANCE and inputOutut are global variables from Beagle Term. I don't want to rewrite beagle term,
   // so I'll tolerate using them this way.
 
@@ -38,13 +36,16 @@ define([
       
       terminalElement = htermTE.div_.firstChild;
       
-      ts = await chromeP.storage.local.get("terminalsize")
+      ts = await chromeP.storage.local.get("terminalsize");
+      th = await chromeP.storage.local.get("terminalshown");
       height = ts.terminalsize || 250;
+      if (th.terminalshown !== true) {
+        height = 0;
+      }
 
-      terminalContainer.style.height = height + "px";
-      terminalElement.style.display = "block";
-      terminalElement.style.height = height-5 + "px";
-      terminalElement.style.bottom = "0px";
+      console.log(ts, height, th);
+
+      command.fire("terminal:resize", height, false);
 
       resizebar = document.querySelector("#terminal-drag");
       resizebar.style.top = height;
@@ -69,9 +70,20 @@ define([
     };
   });
 
-  command.on("terminal:resize", function(pos) {
+  command.on("terminal:resize", function(pos, save=true) {
     height = pos;
-    chromeP.storage.local.set({"terminalsize": height});
+    if (save) {
+      chromeP.storage.local.set({"terminalsize": height});
+    }
+
+    if (height === 0) {
+      height = 5;
+      $('#settingsModal').modal('hide');
+    } else if (height < 30) {
+      height = 30;
+    } else if (!connected) {
+      UI_INSTANCE.ShowSettingsDialog();
+    }
 
     terminalContainer.style.height = height + "px";
     terminalElement.style.display = "block";
@@ -155,8 +167,14 @@ define([
     sessions.addFile(text)
   });
 
-  document.querySelector("#terminaldisconnect").addEventListener('click', ()=>command.fire("terminal:disconnect"))
+  document.querySelector('#connectBtn').addEventListener('click', ()=>command.fire("terminal:connect"));
+  command.on("terminal:connect", function () {
+    connected = true;
+  });
+
+  document.querySelector("#terminaldisconnect").addEventListener('click', ()=>command.fire("terminal:disconnect"));
   command.on("terminal:disconnect", function() {
+    connected = false;
     chrome.serial.flush(UI_INSTANCE.connectionId, (_)=>{
       chrome.serial.disconnect(UI_INSTANCE.connectionId, (result)=>{
         UI_INSTANCE.ShowSettingsDialog();
@@ -168,5 +186,17 @@ define([
     htermTE = undefined;
     command.fire("terminal:init");
     command.fire("terminal:restart");
+  });
+
+  command.on("terminal:show-hide", async function () {
+    ts = await chromeP.storage.local.get("terminalsize");
+    console.log(terminalContainer.style.height, ts.terminalsize);
+    if (terminalContainer.style.height === "5px") {
+      chromeP.storage.local.set({"terminalshown": true});
+      command.fire("terminal:resize", ts.terminalsize || 250, false);
+    } else {
+      chromeP.storage.local.set({"terminalshown": false});
+      command.fire("terminal:resize", 0, false);
+    }
   });
 })

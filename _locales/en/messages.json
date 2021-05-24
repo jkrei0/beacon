@@ -62,6 +62,7 @@
   "menuToggleMacro": { "message": "Toggle Macro Recording" },
   "menuReplayMacro": { "message": "Replay Macro" },
   "menuWordCount": { "message": "Word Count" },
+  "menuSerialTerminal": { "message": "Serial Terminal" },
 
   "menuProject": { "message": "Project" },
   "menuAddDir": { "message": "Add Directory" },

@@ -64,7 +64,8 @@
       "divider",
       { "label": "menuToggleMacro", "command": "ace:togglemacro" },
       { "label": "menuReplayMacro", "command": "ace:command", "argument": "replaymacro" },
-      { "label": "menuWordCount", "command": "editor:word-count" }
+      { "label": "menuWordCount", "command": "editor:word-count" },
+      { "label": "menuSerialTerminal", "command": "terminal:show-hide" }
     ]
   },
   {
