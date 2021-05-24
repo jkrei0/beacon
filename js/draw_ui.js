@@ -27,8 +27,7 @@ DrawUi.prototype = {
   eventRegistered_ : false,
   serialRegistered_ : false,
 
-  registerConnectBtnEvent_: function(self) {
-    self_this = this;
+  registerConnectBtnEvent_: function(self_t) {
     var connectBtn = document.querySelector('#connectBtn');
     connectBtn.addEventListener('click', function(event) {
       // Get the serial port (i.e. COM1, COM2, COM3, etc.)
@@ -91,10 +90,12 @@ DrawUi.prototype = {
         inputOutput.println('Device found on ' + port +
                   ' via Connection ID ' + openInfo.connectionId);
         self.connectionId = openInfo.connectionId;
+        self_t.connectionId = openInfo.connectionId;
         self.connectionPort = port;
+        self_t.connectionPort = port;
         AddConnectedSerialId(openInfo.connectionId);
-        if (!self_this.serialRegistered_) {
-          self_this.serialRegistered_ = true;
+        if (!self_t.serialRegistered_) {
+          self_t.serialRegistered_ = true;
           chrome.serial.onReceive.addListener(function(info) {
             if (info && info.data) {
               inputOutput.print(ab2str(info.data));

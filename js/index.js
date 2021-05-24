@@ -135,6 +135,7 @@ var Crosh = function(argv) {
   };
 
   this.sendString_ = function(fromKeyboard, string) {
+    console.log(self.connectionId);
     chrome.serial.send(self.connectionId, str2ab(string), function() { });
   };
 
