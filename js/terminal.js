@@ -58,6 +58,9 @@ define([
         function onmousemovef (me) {
           me.preventDefault();
           newpos = me.clientY;
+          if (newpos > window.innerHeight - 33) {
+            newpos = window.innerHeight - 33;
+          }
           resizebar.style.top = newpos+"px";
           command.fire("terminal:resize", window.innerHeight-newpos);
         };
@@ -70,6 +73,7 @@ define([
     };
   });
 
+  window.addEventListener("resize", async ()=>{let ts = await chromeP.storage.local.get("terminalsize"); command.fire("terminal:resize", ts.terminalsize)});
   command.on("terminal:resize", function(pos, save=true) {
     height = pos;
     if (save) {
@@ -79,12 +83,14 @@ define([
     if (height === 0) {
       height = 5;
       $('#settingsModal').modal('hide');
+      document.querySelector("#bottom-menu").style.display = "none";
     } else if (height < 30) {
       height = 30;
     } else if (!connected) {
       UI_INSTANCE.ShowSettingsDialog();
+      document.querySelector("#bottom-menu").style.display = "block";
     }
-
+    document.querySelector(".project").style.maxHeight = (window.innerHeight-(height+60)) + "px";
     terminalContainer.style.height = height + "px";
     terminalElement.style.display = "block";
     terminalElement.style.height = height-5 + "px";

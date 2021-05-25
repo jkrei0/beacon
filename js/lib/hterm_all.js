@@ -11271,7 +11271,7 @@ hterm.Terminal.prototype.scrollEnd = function() {
  */
 hterm.Terminal.prototype.scrollPageUp = function() {
   var i = this.scrollPort_.getTopRowIndex();
-  this.scrollPort_.scrollRowToTop(i - this.screenSize.height + 1);
+  this.scrollPort_.scrollRowToTop(i - (this.screenSize.height - 1));
 };
 
 /**
@@ -11280,7 +11280,7 @@ hterm.Terminal.prototype.scrollPageUp = function() {
  */
 hterm.Terminal.prototype.scrollPageDown = function() {
   var i = this.scrollPort_.getTopRowIndex();
-  this.scrollPort_.scrollRowToTop(i + this.screenSize.height - 1);
+  this.scrollPort_.scrollRowToTop(i + (this.screenSize.height - 1));
 };
 
 /**
