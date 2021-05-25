@@ -2,7 +2,7 @@
   "defaultTheme": "chrome", //This should be any of the supported Ace themes
   // look for theme-*.js here: https://github.com/ajaxorg/ace-builds/tree/master/src-noconflict
   
-  "uiTheme": "light", //dark, twilight, or light
+  "uiTheme": "light", //dark, twilight, or light - NOTE: The twilight theme is low-contrast, do not use it if you have trouble seeing.
   "autoHideProject": false, //collapse the project view until you hover
   "immersiveFullscreen": false, //hides menus/tabs in Chrome OS fullscreen mode
   "highlightLine": false,

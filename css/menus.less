@@ -28,8 +28,8 @@
     position: relative;
 
     &:hover:not(.top), &.active {
-      color: black;
-      background: #EEE;
+      color: @foreground;
+      background: lighten(@faded, 8%);
     }
 
     &.parent:hover, &.active {
@@ -47,8 +47,8 @@
       margin-left: 90%;
       margin-top: -2em;
       z-index: 999;
-      color: black;
-      background: white;
+      color: @foreground;
+      background: @background;
       padding: 4px 0;
       line-height: 1.4;
       white-space: nowrap;

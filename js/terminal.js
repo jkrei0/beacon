@@ -99,7 +99,7 @@ define([
 
   command.on("terminal:restart", function () {
     userConfig = Settings.get("user");
-    document.querySelector("#terminalUITheme").setAttribute("href", "css/terminal-"+userConfig.uiTheme+".css")
+    document.querySelector("#terminalUITheme").setAttribute("href", ("css/terminal-"+userConfig.uiTheme).replace("-dark", "")+".css")
     theme = userConfig.terminalTheme;
     if (theme !== "dark" && theme !== "twilight" && theme !== "grey" && theme !== "light") {
       theme = userConfig.uiTheme;
