@@ -4,7 +4,6 @@
 
 var inputOutput;
 var self;
-var connID;
 
 var UI_INSTANCE = new DrawUi();
 
@@ -135,7 +134,8 @@ var Crosh = function(argv) {
   };
 
   this.sendString_ = function(fromKeyboard, string) {
-    console.log(self.connectionId);
+    console.log(string);
+    console.log(str2ab(string));
     chrome.serial.send(self.connectionId, str2ab(string), function() { });
   };
 

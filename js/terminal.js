@@ -11,8 +11,10 @@ define([
   let terminalContainer = document.querySelector("#embeddedterminal");
   let terminalElement = undefined;
   let connected = false;
+  let userConfig = undefined;
+  let htermTE = undefined;
 
-  // htermTE, connID, UI_INSTANCE and inputOutut are global variables from Beagle Term. I don't want to rewrite beagle term,
+  // UI_INSTANCE and inputOutput are global variables from Beagle Term. I don't want to rewrite beagle term,
   // so I'll tolerate using them this way.
 
   command.on("init:restart", function () {
@@ -21,8 +23,6 @@ define([
   command.on("init:startup", function() {
     command.fire("terminal:init");
   });
-
-  let userConfig = undefined;
 
   command.on("terminal:init", function () {
     t = beagleTermStart();
@@ -36,15 +36,13 @@ define([
       
       terminalElement = htermTE.div_.firstChild;
       
+      // get the terminal size and resize it properly
       ts = await chromeP.storage.local.get("terminalsize");
       th = await chromeP.storage.local.get("terminalshown");
       height = ts.terminalsize || 250;
       if (th.terminalshown !== true) {
         height = 0;
       }
-
-      console.log(ts, height, th);
-
       command.fire("terminal:resize", height, false);
 
       resizebar = document.querySelector("#terminal-drag");
@@ -58,8 +56,11 @@ define([
         function onmousemovef (me) {
           me.preventDefault();
           newpos = me.clientY;
-          if (newpos > window.innerHeight - 33) {
-            newpos = window.innerHeight - 33;
+          if (newpos > window.innerHeight - 40) {
+            newpos = window.innerHeight - 40;
+          }
+          if (newpos < 200) {
+            newpos = 200;
           }
           resizebar.style.top = newpos+"px";
           command.fire("terminal:resize", window.innerHeight-newpos);
@@ -79,17 +80,21 @@ define([
     if (save) {
       chromeP.storage.local.set({"terminalsize": height});
     }
+    
+    document.querySelector("#bottom-menu").style.display = "block";
 
+    // check if it's hidden, and show/hide the UI accordingly
     if (height === 0) {
       height = 5;
       $('#settingsModal').modal('hide');
       document.querySelector("#bottom-menu").style.display = "none";
-    } else if (height < 30) {
+    } else if (height < 30) { // as well as make sure that the unhidden terminal is never smaller than 30px
       height = 30;
     } else if (!connected) {
       UI_INSTANCE.ShowSettingsDialog();
-      document.querySelector("#bottom-menu").style.display = "block";
     }
+
+    // set the height
     document.querySelector(".project").style.maxHeight = (window.innerHeight-(height+60)) + "px";
     terminalContainer.style.height = height + "px";
     terminalElement.style.display = "block";
