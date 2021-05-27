@@ -6,7 +6,8 @@ define([
   "util/chromePromise",
   "settings!user",
   "sessions",
-  ], function(command, chromeP, Settings, sessions) {
+  "editor",
+  ], function(command, chromeP, Settings, sessions, editor) {
 
   let terminalContainer = document.querySelector("#embeddedterminal");
   let terminalElement = undefined;
@@ -27,6 +28,7 @@ define([
   command.on("terminal:init", function () {
     t = beagleTermStart();
     htermTE = t;
+    userConfig = Settings.get("user");
 
     t.onTerminalReady = async function() {
       UI_INSTANCE.OnHtermReady();
@@ -49,21 +51,32 @@ define([
       resizebar.style.top = height;
 
       resizebar.addEventListener("mousedown", function (de) {
+        userConfig = Settings.get("user");
         function onmouseupf (ue) {
           document.removeEventListener("mouseup", onmouseupf);
           document.removeEventListener("mousemove", onmousemovef);
         };
         function onmousemovef (me) {
           me.preventDefault();
-          newpos = me.clientY;
-          if (newpos > window.innerHeight - 40) {
-            newpos = window.innerHeight - 40;
+
+          let winsize = window.innerHeight;
+          
+          let newpos;
+          if (userConfig.terminalPosition === "side") {
+            newpos = me.clientX;
+            winsize = window.innerWidth;
+          } else {
+            newpos = me.clientY;
+          }
+
+          if (newpos > winsize - 40) {
+            newpos = winsize - 40;
           }
           if (newpos < 200) {
             newpos = 200;
           }
-          resizebar.style.top = newpos+"px";
-          command.fire("terminal:resize", window.innerHeight-newpos);
+
+          command.fire("terminal:resize", winsize-newpos);
         };
         document.addEventListener("mouseup", onmouseupf);
         document.addEventListener("mousemove", onmousemovef);
@@ -74,13 +87,18 @@ define([
     };
   });
 
-  window.addEventListener("resize", async ()=>{let ts = await chromeP.storage.local.get("terminalsize"); command.fire("terminal:resize", ts.terminalsize)});
-  command.on("terminal:resize", function(pos, save=true) {
+  window.addEventListener("resize", async (evt)=>{
+    if (evt.isTrusted) {
+      let ts = await chromeP.storage.local.get("terminalsize"); command.fire("terminal:resize", ts.terminalsize);
+    }
+  });
+  command.on("terminal:resize", async function(pos, save=true) {
+    window.dispatchEvent(new Event('resize'));
     height = pos;
     if (save) {
       chromeP.storage.local.set({"terminalsize": height});
     }
-    
+
     document.querySelector("#bottom-menu").style.display = "block";
 
     // check if it's hidden, and show/hide the UI accordingly
@@ -94,15 +112,54 @@ define([
       UI_INSTANCE.ShowSettingsDialog();
     }
 
-    // set the height
-    document.querySelector(".project").style.maxHeight = (window.innerHeight-(height+60)) + "px";
-    terminalContainer.style.height = height + "px";
+    resizebar = document.querySelector("#terminal-drag");
+
+    // set the size
+    
+    terminalContainer.style.display = "block";
     terminalElement.style.display = "block";
-    terminalElement.style.height = height-5 + "px";
+    terminalContainer.style.bottom = "0px";
     terminalElement.style.bottom = "0px";
+    if (userConfig.terminalPosition === "side") {
+      document.querySelector(".project").style.maxHeight = (window.innerHeight-55) + "px";
+      document.querySelector(".central").style.width = window.innerWidth - (height) + "px";
+      document.querySelector(".bottom-bar").style.width = window.innerWidth - (height) + "px";
+      document.querySelector(".bottom-bar").style.alignSelf = "flex-start";
+
+      terminalContainer.style.position = "fixed";
+      terminalContainer.style.width = height + "px";
+      terminalContainer.style.right = "0px";
+      terminalContainer.style.height = window.innerHeight - 38 + "px";
+
+      terminalElement.style.width = height-5 + "px";
+      terminalElement.style.right = "0px";
+      terminalElement.style.height = window.innerHeight - 38 + "px";
+
+      resizebar.style.width = "5px";
+      resizebar.style.height = "calc(100% - 30px)";
+      resizebar.style.top = "0px";
+      resizebar.style.right = height-5 + "px";
+    } else {
+      document.querySelector(".project").style.maxHeight = "100%";
+      document.querySelector(".central").style.width = "";
+      document.querySelector(".bottom-bar").style.width = "";
+      document.querySelector(".bottom-bar").style.alignSelf = "flex-end";
+
+      terminalContainer.style.position = "relative";
+      terminalContainer.style.height = height + "px";
+      terminalContainer.style.width = "100%";
+
+      terminalElement.style.height = height-5 + "px";
+      terminalElement.style.width = "100%";
+
+      resizebar.style.width = "100%";
+      resizebar.style.height = "5px";
+      resizebar.style.bottom = height-5 + "px";
+      resizebar.style.right = "0px";
+    }
   });
 
-  command.on("terminal:restart", function () {
+  command.on("terminal:restart", async function () {
     userConfig = Settings.get("user");
     document.querySelector("#terminalUITheme").setAttribute("href", ("css/terminal-"+userConfig.uiTheme).replace("-dark", "")+".css")
     theme = userConfig.terminalTheme;
@@ -142,6 +199,13 @@ define([
         portPicker.innerHTML = HTML;
       }
     });
+    ts = await chromeP.storage.local.get("terminalsize");
+    th = await chromeP.storage.local.get("terminalshown");
+    height = ts.terminalsize || 250;
+    if (th.terminalshown !== true) {
+      height = 0;
+    }
+    command.fire("terminal:resize", height, false);
   });
 
   document.querySelector("#terminalshortcutrun").addEventListener('click', ()=>command.fire("terminal:shortcut-run"))

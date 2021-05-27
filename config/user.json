@@ -31,6 +31,7 @@
   "terminalTheme": "*", // dark, twilight, light, or grey // default = "*" = same as uiTheme
   "runShortcut": "\u0004", // what the run button in the toolbar sends (default is ^D)
   "stopShortcut": "\u0003", // what the stop button in the toolbar sends (default is ^C)
+  "terminalPosition": "bottom", // the terminal's position (bottom or side)
   
   // don't know what the code for a shortcut is?
   // \u00 + hex_for_letter

@@ -16,7 +16,7 @@
   transition: 0.5s;
   position:absolute;
   height: 5px;
-  cursor: ns-resize;
+  cursor: grab;
   z-index: 9;
   background: transparent;
   left: 0px;
