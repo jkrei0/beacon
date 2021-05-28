@@ -101,6 +101,15 @@ define([
 
     document.querySelector("#bottom-menu").style.display = "block";
 
+    let winsize = window.innerHeight;
+    if (userConfig.terminalPosition === "side") {
+      winsize = window.innerWidth;
+    }
+    console.log(height, winsize);
+    if (height > winsize - 200) {
+      height = winsize - 200;
+    }
+
     // check if it's hidden, and show/hide the UI accordingly
     if (height === 0) {
       height = 5;
