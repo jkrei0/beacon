@@ -13,7 +13,7 @@ component, it offers:
 -  fast project-wide string search
 -  a serial terminal emulator
 
-You can also load Beacon from source code. You'll need to have Node and NPM
+Beacon is not available on the Chrome Web Store, but you can load Beacon from source code. You'll need to have Node and NPM
 installed first, then follow these steps:
 
 0. Clone this repo to your local machine
