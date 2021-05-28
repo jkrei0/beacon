@@ -25,6 +25,7 @@ installed first, then follow these steps:
 4. Still on the extensions page, click the button marked "Load unpacked
    extension..." and select the directory containing Beacon's
    manifest.json.
+5. Make sure you reset your user settings when you download a new version/update, so you have the latest settings available.
 
 Beacon is a fork of `Caret <https://github.com/thomaswilburn/Caret>`_ by Thomas Wilburn, modified to include the serial terminal emulator `BeagleTerm <https://github.com/beagleterm/beagle-term>`_.
 
