@@ -32,7 +32,7 @@ DrawUi.prototype = {
     connectBtn.addEventListener('click', function(event) {
       // Get the serial port (i.e. COM1, COM2, COM3, etc.)
       var portSelect = document.querySelector('#portDropdown');
-      var port_ = portSelect.options[portSelect.selectedIndex] || {value: "COM999"};
+      var port_ = portSelect.options[portSelect.selectedIndex] || {value: "COM999"}; // set a default value of COM999 so it doesn't crash if a blank value is picked.
       var port = port_.value;
 
       // Get the baud rate (i.e. 9600, 38400, 57600, 115200, etc. )
@@ -78,25 +78,32 @@ DrawUi.prototype = {
       }, function(openInfo) {
         
         if (openInfo === undefined) {
+          // if COM999 is selected (the default if nothing's selected), don't try to connect.
           if (port == "COM999") {
             inputOutput.println(`Unable to connect do device. No device selected.`);
           } else {
             inputOutput.println(`Unable to connect to device on port ${port}.`);
           }
-          // TODO: Open 'connection dialog' again.
           return;
         }
 
         inputOutput.println('Device found on ' + port +
                   ' via Connection ID ' + openInfo.connectionId);
+
+        // keep track of connection info
         self.connectionId = openInfo.connectionId;
         self_t.connectionId = openInfo.connectionId;
         self.connectionPort = port;
         self_t.connectionPort = port;
         AddConnectedSerialId(openInfo.connectionId);
+
+        // Only register a listener if it hasn't been registered before.
+        // Even if it's a different device, because the chrome serial API doesn't distinguish between devices.
         if (!self_t.serialRegistered_) {
+          // mark the listener as registered
           self_t.serialRegistered_ = true;
           chrome.serial.onReceive.addListener(function(info) {
+            // print info to the terminal when it's received
             if (info && info.data) {
               inputOutput.print(ab2str(info.data));
             }

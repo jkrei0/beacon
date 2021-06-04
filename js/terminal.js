@@ -110,8 +110,8 @@ define([
 
   // on window resize, fire the terminal resize event.
   window.addEventListener("resize", async (evt)=>{
-    if (evt.isTrusted) { // but only if the event is trusted (it's user generated).
-                         // This prevents infinite resizing since the terminal:resize function emits a resize event
+    if (evt.isTrusted) { // but only if the event is trusted (if it's user generated).
+                         // This prevents an infinite resizing loop since the terminal:resize function emits a window resize event
       let ts = await chromeP.storage.local.get("terminalsize"); command.fire("terminal:resize", ts.terminalsize);
     }
   });
@@ -130,7 +130,7 @@ define([
     if (userConfig.terminalPosition === "side") {
       winsize = window.innerWidth;
     }
-    console.log(height, winsize);
+    // prevent the terminal from being too large for the screen (either from a user resize, window resize, or being repositioned).
     if (height > winsize - 200) {
       height = winsize - 200;
     }
@@ -209,6 +209,7 @@ define([
   command.on("terminal:restart", async function () {
     // get/refresh user settings
     userConfig = Settings.get("user");
+
     // load the appropriate theme stylesheet
     document.querySelector("#terminalUITheme").setAttribute("href", ("css/terminal-"+userConfig.uiTheme).replace("-dark", "")+".css")
     theme = userConfig.terminalTheme;
